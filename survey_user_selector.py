@@ -6,17 +6,17 @@ from typing import Set, List, Tuple
 import praw
 
 
-class Finder(object):
+class Selector(object):
     """finds users"""
 
-    def __init__(self: Finder, reddit: praw.Reddit, subreddit: str, sample: int = 100,
+    def __init__(self: Selector, reddit: praw.Reddit, subreddit: str, sample: int = 100,
                  days_back: int = 30) -> None:
         self.reddit: praw.Reddit = reddit
         self.subreddit: praw.models.Subreddit = self.reddit.subreddit(subreddit)
         self.sample = sample
         self.days_back = days_back
 
-    def find_users(self: Finder) -> Set[praw.models.Redditor]:
+    def find_users(self: Selector) -> Set[praw.models.Redditor]:
         """finds users"""
         redditors: Set[praw.models.Redditor] = set()
         times: Tuple[int, int] = self.get_times()
@@ -27,14 +27,14 @@ class Finder(object):
 
         return redditors
 
-    def get_times(self: Finder) -> Tuple[int, int]:
+    def get_times(self: Selector) -> Tuple[int, int]:
         """returns timestamps"""
         import datetime
         now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
         month_ago: datetime.datetime = now + datetime.timedelta(-self.days_back)
         return (int(now.timestamp()), int(month_ago.timestamp()))
 
-    def choose_users(self: Finder, reds: Set[praw.models.Redditor]) -> List[praw.models.Redditor]:
+    def choose_users(self: Selector, reds: Set[praw.models.Redditor]) -> List[praw.models.Redditor]:
         """returns [n] amount of users"""
         import random
         return random.choices(list(reds), k=self.sample)
